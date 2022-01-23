@@ -41,7 +41,9 @@
   const moles = document.querySelectorAll('.mole');
   const box=document.getElementsByClassName('box')
   const finish = (currentValue) => currentValue.traversed === true;
+  const start = (currentValue) => currentValue.traversed === false;
   let question;
+  let currentPlaying;
   let timeUp = false;
   let score = 0;
   let replies=[
@@ -85,6 +87,7 @@
   }
 
 ]
+
 holes.forEach(element => {
   element.addEventListener('click',(hole)=>{
     hole.path[0].childNodes[1].style.top='0'
@@ -100,9 +103,9 @@ holes.forEach(element => {
     if(questions.every(finish)){
       console.log('end')
       document.getElementsByClassName('start')[0].childNodes[3].style.display='none'
-      document.getElementsByClassName('start')[0].childNodes[1].value="Get Result"
-    }
+      document.getElementsByClassName('start')[0].childNodes[1].innerHTML='Result'
    }
+  }
    else{
     const idx=Math.floor(Math.random() * replies.length)
     const reply=wrong_replies[idx]
@@ -155,12 +158,17 @@ document.querySelector('.hole2').addEventListener('mouseover',(hole)=>{
       pingResult()
       return
     }
+
     const question=randomQuestion()
     box[0].childNodes[0].innerHTML=question.q
+    pauseAll()
     question.speech.play()
-   
   }
-
+   function pauseAll(){
+     audioElements.forEach(audio =>{
+       audio.pause()
+     })
+   }
   function playGame() {
    
     document.getElementsByClassName('start')[0].childNodes[3].style.display='inline-block'
@@ -183,7 +191,10 @@ document.querySelector('.hole2').addEventListener('mouseover',(hole)=>{
     div.classList.add('score','centered')
     parent.appendChild(div)
 }
-  
+const audioElements=[]
+questions.forEach(audio=>{
+  audioElements.push(audio.speech)
+})
 </script>
 </body>
 </html>
