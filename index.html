@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>5 Senses Of Human Beings!</title>
+  <link href='https://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Your Score: <span class="score">0</span></h1>
+  <div class="start">
+
+    <button onClick="playGame()">Start!</button>
+    <button  onClick="playGame()" style="display: none;">Next-></button>
+  </div>
+ 
+  <div class="box"><h1>Hello there!! <div style="font-size:3rem;margin-top: 5px;margin-left: 300px;">Click <bold>Start</bold> to begin</div></h1></div>
+  <div class="game">
+    <div class="hole hole1">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole2">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole3">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole4">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole5">
+      <div class="mole"></div>
+    </div>
+  
+  </div>
+
+<script>
+  const holes = document.querySelectorAll('.hole');
+  const scoreBoard = document.querySelector('.score');
+  const moles = document.querySelectorAll('.mole');
+  const box=document.getElementsByClassName('box')
+  const finish = (currentValue) => currentValue.traversed === true;
+  let question;
+  let timeUp = false;
+  let score = 0;
+  let replies=[
+    {t:'Awesome !!',a:new Audio('./music/Awesome.mp3')},
+    {t:'Wicked Cool !!',a:new Audio('./music/wicked_cool.mp3')},
+    {t:'Nice Work !!',a:new Audio('./music/Nice_work.mp3')}
+  ]
+  let wrong_replies=[
+    {t:'Better Luck Next Time !!',a:new Audio('./music/better_luck_next_time.mp3')},
+    {t:'Give It Another Try !!',a:new Audio('./music/Give_it_another_try.mp3')}
+  ]
+  let questions=[{
+    q:'What do you need to eat Ice Cream?',
+    ans:'hole3',
+    speech:  new Audio('./music/q1.mp3'),
+    traversed: false
+  },
+  {
+    q:'How can you tell if your garbage is stinky?',
+    ans:'hole1',
+    speech:  new Audio('./music/q2.mp3'),
+    traversed: false
+  },
+  {
+    q:'How can you tell if music is too loud?',
+    ans:'hole4',
+    speech:  new Audio('./music/q3.mp3'),
+    traversed: false
+  },
+  {
+    q:'What do you need to tell if a car is green or yellow?',
+    ans:'hole2',
+    speech:  new Audio('./music/q4.mp3'),
+    traversed: false
+  },
+  {
+    q:'What do you need to tell if pan is hot or cold?',
+    ans:'hole5',
+    speech:  new Audio('./music/q5.mp3'),
+    traversed: false
+  }
+
+]
+holes.forEach(element => {
+  element.addEventListener('click',(hole)=>{
+    hole.path[0].childNodes[1].style.top='0'
+   if(hole.path[0].classList[1]===question.ans){
+    const idx=Math.floor(Math.random() * replies.length)
+    const reply=replies[idx]
+    reply.a.play()
+    box[0].childNodes[0].innerHTML=reply.t
+    score++;
+    console.log(score)
+    scoreBoard.textContent = score;
+    question.traversed=true;
+    if(questions.every(finish)){
+      console.log('end')
+      document.getElementsByClassName('start')[0].childNodes[3].style.display='none'
+      document.getElementsByClassName('start')[0].childNodes[1].value="Get Result"
+    }
+   }
+   else{
+    const idx=Math.floor(Math.random() * replies.length)
+    const reply=wrong_replies[idx]
+    reply.a.play()
+    box[0].childNodes[0].innerHTML=reply.t
+    score=score-1
+    scoreBoard.textContent = score;
+   }
+  })
+})
+document.querySelector('.hole2').addEventListener('mouseover',(hole)=>{
+   hole.path[0].childNodes[1].style.top='70px'
+  
+  })
+  document.querySelector('.hole5').addEventListener('mouseover',(hole)=>{
+    hole.path[0].childNodes[1].style.top='140px'
+  
+  })
+  document.querySelector('.hole4').addEventListener('mouseover',(hole)=>{
+    hole.path[0].childNodes[1].style.top='100px'
+    hole.path[0].childNodes[1].style.width='60%'
+  })
+
+  document.querySelector('.hole1').addEventListener('mouseover',(hole)=>{
+    hole.path[0].childNodes[1].style.top='120px'
+    hole.path[0].childNodes[1].style.width='60%'
+  })
+  document.querySelector('.hole3').addEventListener('mouseover',(hole)=>{
+    hole.path[0].childNodes[1].style.top='80px'
+    
+  })
+  holes.forEach(hole=>
+    hole.addEventListener('mouseout',(event)=>[
+    event.path[0].childNodes[1].style.top='100%'
+  ])
+  )
+
+  function randomQuestion() {
+    const idx = Math.floor(Math.random() * questions.length);
+    question = questions[idx];
+    while(question.traversed)
+        question=questions[Math.floor(Math.random() * questions.length)]
+    return question;
+  }
+
+  function peep() {
+    
+    console.log(questions.every(finish))
+    if( questions.every(finish)){
+      pingResult()
+      return
+    }
+    const question=randomQuestion()
+    box[0].childNodes[0].innerHTML=question.q
+    question.speech.play()
+   
+  }
+
+  function playGame() {
+   
+    document.getElementsByClassName('start')[0].childNodes[3].style.display='inline-block'
+    peep();
+  }
+  function pingResult() {
+    var parent = document.getElementsByTagName("BODY")[0];
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+    var div = document.createElement("div");
+    div.style.width = "400px";
+    div.style.height = "400px";
+    if (score> 3 && score!=5)
+    div.innerHTML="Performance is good <br><br>&#x1F600"
+    else if (score === 5)
+    div.innerHTML="Performance is Excellent <br><br> &#x1F60D"
+    else 
+    div.innerHTML="Need some improvement"
+    div.classList.add('score','centered')
+    parent.appendChild(div)
+}
+  
+</script>
+</body>
+</html>
